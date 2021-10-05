@@ -22,12 +22,13 @@ enum URLAPI {
 }
 
 extension URLAPI {
-    func configure(urlAPI: URLAPI, latitude: Double, longitude: Double) -> URL? {
+    // 이 부분도 고쳐보기 -> 연관값 아이디어
+    func configure(latitude: Double, longitude: Double) -> URL? {
         let apiKey = "1af72e89e05d364984fe32463122135f"
         var urlComponents = URLComponents()
         urlComponents.scheme = "https"
         urlComponents.host = "api.openweathermap.org"
-        urlComponents.path = urlAPI.path
+        urlComponents.path = self.path
         let lat = URLQueryItem(name: "lat", value: latitude.description)
         let lon = URLQueryItem(name: "lon", value: longitude.description)
         let appId = URLQueryItem(name: "appid", value: apiKey)
