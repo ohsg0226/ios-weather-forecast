@@ -22,7 +22,6 @@ enum URLAPI {
 }
 
 extension URLAPI {
-    // 이 부분도 고쳐보기 -> 연관값 아이디어
     func configure(latitude: Double, longitude: Double) -> URL? {
         let apiKey = "1af72e89e05d364984fe32463122135f"
         var urlComponents = URLComponents()
@@ -37,3 +36,27 @@ extension URLAPI {
         return urlComponents.url
     }
 }
+
+
+
+//case getCurrent(Double, Double)
+//case getForecast(Double, Double)
+//
+//var path: String {
+//    switch self {
+//    case .getCurrent:
+//        return "/data/2.5/weather"
+//    case .getForecast:
+//        return "/data/2.5/forecast"
+//    }
+//}
+//
+//var query: (Double, Double) {
+//    switch self {
+//    case .getCurrent(let latitude, let longitude):
+//        return (latitude, longitude)
+//    case .getForecast(let latitude, let longitude):
+//        return (latitude, longitude)
+//    }
+//}
+//}

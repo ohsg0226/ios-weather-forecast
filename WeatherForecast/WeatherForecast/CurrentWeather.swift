@@ -7,6 +7,12 @@
 
 import Foundation
 
+protocol WeatherType: Decodable {
+}
+
+extension CurrentWeather: WeatherType { }
+extension FiveDayForecast: WeatherType { }
+
 struct CurrentWeather: Decodable {
     let coordinate: Coordinate?
     let weather: [Weather]?

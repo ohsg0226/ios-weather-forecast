@@ -28,4 +28,9 @@ struct ParsingManager {
         }
         return .success(jsonData)
     }
+    
+//    func decode<T: Decodable>(_ data: Data, to model: T.Type) -> T? {
+//        let parsedData = try? decoder.decode(model, from: data)
+//        return parsedData
+//    }
 }

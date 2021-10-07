@@ -9,8 +9,11 @@ import CoreLocation
 
 class ViewController: UIViewController {
     // 싱글턴?
-    let networkManager = NetworkManager()
+    let httpMethod = HTTPMethod()
     var locationManager: CLLocationManager?
+    
+    var currentWeather: CurrentWeather?
+    var fiveDayForecast: FiveDayForecast?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,44 +32,45 @@ extension ViewController: CLLocationManagerDelegate {
         if let coordinate = locations.first {
             let latitude = coordinate.coordinate.latitude
             let longitude = coordinate.coordinate.longitude
-//            URLAPI.getCurrent.configure(latitude: <#T##Double#>, longitude: <#T##Double#>)
-            let findLocation = CLLocation(latitude: 37.540846, longitude: 126.971757)
-//            let findLocation = CLLocation(latitude: latitude, longitude: longitude)
+            
+            getCurrentWeatherData(of: Location(latitude: latitude, longitude: longitude))
+            getFiveDayForecastData(latitude: latitude, longitude: longitude)
+            
+            let findLocation = CLLocation(latitude: latitude, longitude: longitude)
             let geocoder = CLGeocoder()
             let locale = Locale(identifier: "Ko-kr")
             geocoder.reverseGeocodeLocation(findLocation, preferredLocale: locale, completionHandler: {(placemarks, error) in
                 if let address: [CLPlacemark] = placemarks {
-//                    print(address.last?.addressDictionary!["State"]) as? String
-//                    print(address.last?.timeZone)
-                    print(address.last?.administrativeArea)
-                    print(address.last?.locality)
-                    print(address.last?.subLocality)
-                    print(address.last?.name)
-//                    if let name: String = address.last?.name { print(name) } //전체 주소
+                    print(address.first?.administrativeArea)
+                    print(address.first?.locality)
+                    print(address.first?.subLocality)
                 }
             })
         }
     }
-    
-//    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-//        print(error)
-//    }
 }
 
-//enum Weather {
-//    case getCurrent
-//    case getForecast
-//
-//    var modelType: Decodable {
-//        switch self {
-//        case .getCurrent:
-//            return CurrentWeather
-//        case .getForecast:
-//            return FiveDayForecast
-//        }
-//    }
-//}
-//
-//extension ViewController {
-//    func getWeather(type: )
-//}
+extension ViewController {
+    func getCurrentWeatherData(of location: Location) {
+        guard let url = URLAPI.getCurrent.configure(latitude: location.latitude, longitude: location.latitude) else {
+            return
+        }
+        httpMethod.getWeatherData(url: url, model: CurrentWeather.self) { model in
+            self.currentWeather = model
+        }
+    }
+    
+    func getFiveDayForecastData(latitude: Double, longitude: Double) {
+        guard let url = URLAPI.getForecast.configure(latitude: latitude, longitude: longitude) else {
+            return
+        }
+        httpMethod.getWeatherData(url: url, model: FiveDayForecast.self) { model in
+            self.fiveDayForecast = model
+        }
+    }
+}
+
+struct Location {
+    let latitude: Double
+    let longitude: Double
+}

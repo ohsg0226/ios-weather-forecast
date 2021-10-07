@@ -7,18 +7,37 @@
 
 import Foundation
 
+//enum ParsingType {
+//    case currentWeather
+//    case fiveDayForecast
+//
+//    var model: WeatherType {
+//        switch self {
+//        case .currentWeather:
+//            return CurrentWeather.self
+//        case .fiveDayForecast:
+//            return FiveDayForecast.self
+//        }
+//    }
+//}
+
+protocol TestProtocol: AnyObject {
+    func success<T: Decodable>(model: T)
+}
+
 class HTTPMethod {
     let networkManager = NetworkManager()
     let parsingManager = ParsingManager()
+    var delegate: TestProtocol?
     
-    func getWeather(url: URL) {
+    func getWeatherData<T: Decodable>(url: URL, model: T.Type, competion: @escaping (T) -> Void) {
         networkManager.request(url: url) { result in
             switch result {
             case .success(let data):
-                let jsonData = self.parsingManager.parse(data, to: CurrentWeather.self)
+                let jsonData = self.parsingManager.parse(data, to: model.self)
                 switch jsonData {
-                case .success(let currentWeather):
-                    print(currentWeather)
+                case .success(let modelType):
+                    competion(modelType)
                 case .failure(let error):
                     print(error)
                 }
@@ -28,9 +47,6 @@ class HTTPMethod {
         }
     }
 
-//
-//    getWeather(url)
-//
 //    func fetchWeatherData(type: Weather)
 //    type.model
 //
@@ -48,22 +64,37 @@ class HTTPMethod {
 //        }
 //    }
     
-    func getFiveDayForecast(url: URL) {
-        networkManager.request(url: url) { result in
-            switch result {
-            case .success(let data):
-                let jsonData = self.parsingManager.parse(data, to: FiveDayForecast.self)
-                switch jsonData {
-                case .success(let fiveDayForecast):
-                    print(fiveDayForecast)
-                case .failure(let error):
-                    print(error)
-                }
-            case .failure(let error):
-                print(error)
-            }
-        }
-    }
+//    func getFiveDayForecast(url: URL) {
+//        networkManager.request(url: url) { result in
+//            switch result {
+//            case .success(let data):
+//                let jsonData = self.parsingManager.parse(data, to: FiveDayForecast.self)
+//                switch jsonData {
+//                case .success(let fiveDayForecast):
+//                    print(fiveDayForecast)
+//                case .failure(let error):
+//                    print(error)
+//                }
+//            case .failure(let error):
+//                print(error)
+//            }
+//        }
+//    }
+//
+//    func getWeather<T: Decodable>(url: URL, type: Decodable) -> T {
+//        networkManager.request(url: url) { result in
+//            switch result {
+//            case .success(let data):
+//                let json = self.parsingManager.parse(data, to: T.self)
+//                return json
+//            case .failure(let error):
+//                print(error)
+//            }
+//        }
+//    }
+//
+//    let currentWeather: CurrentWeather = ParsingManager().parse(<#T##data: Data##Data#>, to: <#T##Decodable.Protocol#>)
+    
 //
 //    func resultHandler<T: Decodable>(_ type: T.Type, result: Result<Data, NetworkError>) {
 //        switch result {
