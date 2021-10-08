@@ -8,7 +8,7 @@
 import Foundation
 
 enum WeatherRequest: Requestable {
-    case getCurrent(Double, Double)
+    case getCurrent(latitude: Double, longitude: Double)
     case getForecast(latitude: Double, longitude: Double)
     
     var baseURL: String {
@@ -26,7 +26,7 @@ enum WeatherRequest: Requestable {
     
     var query: (Double, Double) {
         switch self {
-        case .getCurrent(let latitude, let longitude):
+        case .getCurrent(latitude: let latitude, longitude: let longitude):
             return (latitude, longitude)
         case .getForecast(latitude: let latitude, longitude: let longitude):
             return (latitude, longitude)

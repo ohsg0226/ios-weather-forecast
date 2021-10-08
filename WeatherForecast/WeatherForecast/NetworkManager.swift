@@ -17,6 +17,7 @@ class NetworkManager<T: Requestable> {
     }
     
     func request(of request: T, completion: @escaping SessionResult) {
+        print(request)
         guard let urlRequest = request.configure() else {
             return
         }

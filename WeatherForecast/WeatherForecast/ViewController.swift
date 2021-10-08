@@ -34,11 +34,12 @@ extension ViewController: CLLocationManagerDelegate {
         if let coordinate = locations.first {
             let latitude = coordinate.coordinate.latitude
             let longitude = coordinate.coordinate.longitude
-            fetchCurrentWeather(of: Location(latitude: latitude, longitude: longitude))
+            
+            
             DispatchQueue.main.async {
                 self.currentWeatherLabel.text = self.currentWeather?.name
             }
-            
+
             let findLocation = CLLocation(latitude: latitude, longitude: longitude)
             let geocoder = CLGeocoder()
             let locale = Locale(identifier: "Ko-kr")
@@ -55,7 +56,8 @@ extension ViewController: CLLocationManagerDelegate {
 
 extension ViewController {
     func fetchCurrentWeather(of location: Location) {
-        networkManager.request(of: .getCurrent(location.latitude, location.latitude)) { result in
+        print("2")
+        networkManager.request(of: .getCurrent(latitude: location.latitude, longitude: location.latitude)) { result in
             switch result {
             case .success(let data):
                 let parsedData = self.parsingManager.parse(data, model: CurrentWeather.self)

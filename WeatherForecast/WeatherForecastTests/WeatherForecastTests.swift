@@ -28,7 +28,7 @@ class WeatherForecastTests: XCTestCase {
 //        //then
 //        XCTAssertEqual(expectedValue, outputValue)
 //    }
-//    
+//
 //    func test_JSON파일인FiveDayWeather를_디코딩했을때_id는2643743이다() {
 //        //given
 //        let outputValue: Int?
@@ -46,7 +46,7 @@ class WeatherForecastTests: XCTestCase {
 //        //then
 //        XCTAssertEqual(expectedValue, outputValue)
 //    }
-//    
+//
 //    func test_mock통신이_성공한다() {
 //        //given
 //        let path = Bundle(for: type(of: self)).path(forResource: "CurrentWeather", ofType: "json")
@@ -54,7 +54,7 @@ class WeatherForecastTests: XCTestCase {
 //        let url = URL(string: "www.test.com")
 //        let session = MockURLSession(isSuccess: true, data: jsonFile)
 //        let networkManager = NetworkManager(session: session)
-//        
+//
 //        //when
 //        networkManager.request(url: url!) { result in
 //            //then
@@ -66,7 +66,7 @@ class WeatherForecastTests: XCTestCase {
 //            }
 //        }
 //    }
-//    
+//
 //    func test_mock통신이_실패한다() {
 //        //given
 //        let path = Bundle(for: type(of: self)).path(forResource: "CurrentWeather", ofType: "json")
@@ -74,7 +74,7 @@ class WeatherForecastTests: XCTestCase {
 //        let url = URL(string: "www.test.com")
 //        let session = MockURLSession(isSuccess: false, data: jsonFile)
 //        let networkManager = NetworkManager(session: session)
-//        
+//
 //        //when
 //        networkManager.request(url: url!) { result in
 //            //then
@@ -87,11 +87,16 @@ class WeatherForecastTests: XCTestCase {
 //        }
 //    }
     
+    func test() {
+        let outputValue = "1"
+    }
+    
     func test_실제네트워크통신_성공() {
         var outputValue: String?
         let expectedValue = "Banpobondong"
         let networkManager = NetworkManager<WeatherRequest>()
-        networkManager.request(of: .getCurrent(37.478055, 126.961595)) { result in
+        print("1")
+        networkManager.request(of: .getCurrent(latitude: 37.478055, longitude: 126.961595)) { result in
             switch result {
             case .success(let data):
                 let parsedData = self.parsingManager.parse(data, model: CurrentWeather.self)
@@ -105,6 +110,7 @@ class WeatherForecastTests: XCTestCase {
                 XCTFail()
             }
         }
+        sleep(5)
         XCTAssertEqual(outputValue, expectedValue)
     }
 
