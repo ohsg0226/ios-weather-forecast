@@ -25,27 +25,27 @@ protocol TestProtocol: AnyObject {
     func success<T: Decodable>(model: T)
 }
 
-class HTTPMethod {
-    let networkManager = NetworkManager()
-    let parsingManager = ParsingManager()
-    var delegate: TestProtocol?
-    
-    func getWeatherData<T: Decodable>(url: URL, model: T.Type, competion: @escaping (T) -> Void) {
-        networkManager.request(url: url) { result in
-            switch result {
-            case .success(let data):
-                let jsonData = self.parsingManager.parse(data, to: model.self)
-                switch jsonData {
-                case .success(let modelType):
-                    competion(modelType)
-                case .failure(let error):
-                    print(error)
-                }
-            case .failure(let error):
-                print(error)
-            }
-        }
-    }
+//class HTTPMethod2222 {
+//    let networkManager = NetworkManager()
+//    let parsingManager = ParsingManager()
+//    var delegate: TestProtocol?
+//
+//    func getWeatherData<T: Decodable>(url: URL, model: T.Type, competion: @escaping (T) -> Void) {
+//        networkManager.request(url: url) { result in
+//            switch result {
+//            case .success(let data):
+//                let jsonData = self.parsingManager.parse(data, to: model.self)
+//                switch jsonData {
+//                case .success(let modelType):
+//                    competion(modelType)
+//                case .failure(let error):
+//                    print(error)
+//                }
+//            case .failure(let error):
+//                print(error)
+//            }
+//        }
+//    }
 
 //    func fetchWeatherData(type: Weather)
 //    type.model
@@ -110,4 +110,4 @@ class HTTPMethod {
 //            print(error)
 //        }
 //    }
-}
+//}

@@ -8,8 +8,10 @@ import UIKit
 import CoreLocation
 
 class ViewController: UIViewController {
+    @IBOutlet weak var currentWeatherLabel: UILabel!
     // 싱글턴?
-    let httpMethod = HTTPMethod()
+    let networkManager = NetworkManager<WeatherRequest>()
+    let parsingManager = ParsingManager()
     var locationManager: CLLocationManager?
     
     var currentWeather: CurrentWeather?
@@ -32,9 +34,10 @@ extension ViewController: CLLocationManagerDelegate {
         if let coordinate = locations.first {
             let latitude = coordinate.coordinate.latitude
             let longitude = coordinate.coordinate.longitude
-            
-            getCurrentWeatherData(of: Location(latitude: latitude, longitude: longitude))
-            getFiveDayForecastData(latitude: latitude, longitude: longitude)
+            fetchCurrentWeather(of: Location(latitude: latitude, longitude: longitude))
+            DispatchQueue.main.async {
+                self.currentWeatherLabel.text = self.currentWeather?.name
+            }
             
             let findLocation = CLLocation(latitude: latitude, longitude: longitude)
             let geocoder = CLGeocoder()
@@ -51,23 +54,39 @@ extension ViewController: CLLocationManagerDelegate {
 }
 
 extension ViewController {
-    func getCurrentWeatherData(of location: Location) {
-        guard let url = URLAPI.getCurrent.configure(latitude: location.latitude, longitude: location.latitude) else {
-            return
-        }
-        httpMethod.getWeatherData(url: url, model: CurrentWeather.self) { model in
-            self.currentWeather = model
+    func fetchCurrentWeather(of location: Location) {
+        networkManager.request(of: .getCurrent(location.latitude, location.latitude)) { result in
+            switch result {
+            case .success(let data):
+                let parsedData = self.parsingManager.parse(data, model: CurrentWeather.self)
+                switch parsedData {
+                case .success(let currentWeatherData):
+                    self.currentWeather = currentWeatherData
+                case .failure(let error):
+                    print(error)
+                }
+            case .failure(let error):
+                print(error)
+            }
         }
     }
     
-    func getFiveDayForecastData(latitude: Double, longitude: Double) {
-        guard let url = URLAPI.getForecast.configure(latitude: latitude, longitude: longitude) else {
-            return
-        }
-        httpMethod.getWeatherData(url: url, model: FiveDayForecast.self) { model in
-            self.fiveDayForecast = model
-        }
-    }
+//    func fetchFiveDatForecast() {
+//        networkManager.request(of: .getForecast) { result in
+//            switch result {
+//            case .success(let data):
+//                let parsedData = self.parsingManager.parse1(data, model: FiveDayForecast.self)
+//                switch parsedData {
+//                case .success(let fiveDayForecastData):
+//                    self.fiveDayForecast = fiveDayForecastData
+//                case .failure(let error):
+//                    print(error)
+//                }
+//            case .failure(let error):
+//                print(error)
+//            }
+//        }
+//    }
 }
 
 struct Location {
